@@ -1,0 +1,50 @@
+space rock game:
+
+4.15
+I set up the game with my teacher. We split the game logic into methods, so they can be easily managed, reused, and tested individually.
+
+4.28 Sunday
+I finished the framework of the game with my teacher. The code 200 lines or so (from 12:40 to 2:30)
+The code is partitioned into several sections: draw(), handle_input(), process_game_logic(), init_game(), and main_loop() where the abovementioned methods are integrated and executed in a defined order. When the user wants to play the game, he only needs to call: <game_page_obj>.main_loop(). This is one of the advantages of encapsulation!
+
+4.28 
+I started to add functions to the game. I made a detailed plan of what should be added.
+Firstly, I added 'lives' attribute to Movable() class. Then I created abstractGame base class so that I can create a main page, a shop page, and a game page using the template. 
+I added login function. For this function, I created a database called 'spacerock' in mysql command line client. importing and enriched the collide() function of Movable class so that things doesn't disappear as soon as they are collided -- they lose lives and only when the 'lives' value decreases to zero are they demolished.
+
+
+4.29
+made the main page in the morning and the afternoon
+I want this: each page entry corresponds to a button. So for the button class, the parameter is a dictionary in form: <page_name>:<page_object>. I created a button class and then realised that a button manager is needed as a intermediate to link the dictionary with the button objects. This took me quite long, because it seems that I didn't fully understand object.get_rect().center attribute and object.get_rect(). I misused it, which led to a number of unknown errors. 
+
+Then, I made 
+
+5.1 wednesday:
+in the morning I found several bugs in the program and altered the structure a bit to make it work. 
+One problem that I encountered is that when I press a key, the program then doesn't react to any of my key interrupts. I searched on the Internet and found a reasonable explanation that I didn't put pygame._stop_input_text() at the beginning of the main program. I tried and it works... luckily.
+
+Then I focused on the messagebox. The message box doesn't disappear after I click the submit button, though it works individually. I guess it's because of the pygame window. Then I search on the internet and found the 'tk' window needs to be destroyed. The first time I tried it, the window didn't even show up. Then I combined quit() and destroy() and it worked.
+
+Another problem is that the game window quit with errors reported. One explanation that I learnt from stackOverflow is that pygame doesn't like deepcopy, which indicates that when I do pygame.quit(), it quits all the pages (I have multiple pages operating, the main_page and the game_page). So then I changed strategy, turning keep_going to false to cease the while loop, instead of quitting the window. When the while loop ends, main_loop() method ends, and the control is passed to main_page -- everything goes back to normal! elating!
+
+Another small problem that I encountered is that I can't enter the game via the main_page twice. I found that it's because I changed some default settings of the game_page object, e.g. self.is_win,self.spaceship, self.keep_going... creating a reset() method is too troublesome because I need to modify lots of values. Rather, I decided to simply discard the object and initialise a new one after the main_loop() method ended
+
+Additionally, there was a small problem with the sound effect. I said in the program: when the mouse collides with the button, make a sound. But what I neglected was that the while loop keep obtaining the position of the mouse and executes the collision detection logic. This means that the sound will go on and on as long as the mouse is on the button, while my intention was to let it sound once everytime the mouse contact the button. I had no choice but to disobey the encapsulation law a bit -- as soon as the sound is played once, set the flag to false so it won't be executed again; create a enable_play() method where the flag will be set to True again, when the mouse is off the button, call this method.
+
+In the computer science lessons in the afternoon, I finished the register function, and made several subroutines so that they are reused in different programs. 
+
+Evening
+in the evening, I mainly focused on the shop program
+
+5.2
+solved some small bugs in the program
+bugs fixed:
+1. after registration, the user info list is updated, so that the newly registered user can login straight after registration
+2. conceal shield object from the game page. Modify the collide, draw method of shield so that the position of it follows the position of hte spaceship.
+3. modify the collide method of shield so that the asteroid is bounced back when contacting the circular shield
+4. modify the handle_input() method in shop_page. There was a small problem with the scope of the variable. Now it's solved
+5. modify the button class so that individual button object has full control of self.is_active attribute. Previously, this is controlled by Buttons class
+6. other careless bugs resolved
+
+the game is ready to publish!
+
